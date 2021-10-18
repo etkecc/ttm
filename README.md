@@ -10,6 +10,45 @@ Consider this project a "bash-oneliner" to do some stuff fast. It's not supposed
 * Collect time information (real/user/sys, like `time command`)
 * Send that info to the matrix room
 
+## How it looks like
+
+### you run command in terminal...
+
+```bash
+$ ttm ansible-playbook --with args
+# ... scroll-scroll-scroll
+PLAY RECAP *****************************************************************************************************************************
+gitlab.com                    : ok=33   changed=0    unreachable=0    failed=0    skipped=147  rescued=0    ignored=0
+
+
+real	15.166239745s
+user	10.330419s
+sys	2.213327s
+```
+
+### ...and get fancy html-formated message in matrix
+
+**ttm report**
+
+```bash
+ansible-playbook --with args
+```
+
+```bash
+# end of log (if configured)
+PLAY RECAP *****************************************************************************************************************************
+gitlab.com                    : ok=33   changed=0    unreachable=0    failed=0    skipped=147  rescued=0    ignored=0
+```
+
+```bash
+real	15.166239745s
+user	10.330419s
+sys	2.213327s
+```
+
+Exit code: `0`
+
+
 ## Stability and project future
 
 * Project functionality considered final

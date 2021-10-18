@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Client implementation
 type Client struct {
 	homeserver string
 	password   string
