@@ -23,7 +23,7 @@ gitlab.com                    : ok=33   changed=0    unreachable=0    failed=0  
 
 real	15.166239745s
 user	10.330419s
-sys	2.213327s
+sys		2.213327s
 ```
 
 ### ...and get fancy html-formated message in matrix
@@ -43,7 +43,7 @@ gitlab.com                    : ok=33   changed=0    unreachable=0    failed=0  
 ```bash
 real	15.166239745s
 user	10.330419s
-sys	2.213327s
+sys		2.213327s
 ```
 
 Exit code: `0`
