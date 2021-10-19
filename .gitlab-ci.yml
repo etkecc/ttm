@@ -16,7 +16,7 @@ unit:
 
 release:
   stage: release
-  only: tags
+  only: ['tags']
   image:
     name: goreleaser/goreleaser
     entrypoint: ['']
