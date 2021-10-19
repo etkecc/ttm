@@ -1,0 +1,41 @@
+project_name: ttm
+before:
+  hooks:
+  - go mod tidy
+
+builds:
+  - main: ./cmd
+    binary: ttm
+    goos:
+      - freebsd
+      - linux
+      - darwin
+    goarch:
+      - 386
+      - arm
+      - arm64
+      - amd64
+    ignore:
+      - goos: darwin
+        goarch: 386
+
+checksum:
+  name_template: 'checksums.txt'
+
+archives:
+  - files:
+      - LICENSE.md
+      - README.md
+
+nfpms:
+  - vendor: https://etke.cc
+    maintainer: etke.cc
+    description: ttm stand for time-to-matrix, `time`-like program that will send execution info to matrix room
+    homepage: https://gitlab.com/etke.cc/ttm
+    license: MIT
+    formats:
+      - deb
+      - rpm
+      - apk
+changelog:
+  sort: asc

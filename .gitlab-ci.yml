@@ -1,6 +1,6 @@
 stages:
   - test
-  - docker
+  - release
 
 lint:
   stage: test
@@ -13,3 +13,12 @@ unit:
   image: registry.gitlab.com/etke.cc/base
   script:
     - make test
+
+release:
+  stage: release
+  only: tags
+  image:
+    name: goreleaser/goreleaser
+    entrypoint: ['']
+  script:
+    - goreleaser release --rm-dist

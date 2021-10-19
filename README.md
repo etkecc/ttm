@@ -74,5 +74,6 @@ done via env vars:
 
 ## How to get
 
-1. `go install gitlab.com/etke.cc/ttm@latest`
+1. [Releases](https://gitlab.com/etke.cc/ttm/-/releases) for freebsd, linux and MacOS
+2. or `go install gitlab.com/etke.cc/ttm@latest`
 2. or from source code
