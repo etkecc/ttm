@@ -20,6 +20,8 @@ var colors = regexp.MustCompile(colorsregex)
 
 // Process info
 type Process struct {
+	fulllog bool
+	notime  bool
 	Command string
 	Time    ProcessTime
 	Log     []string
@@ -34,8 +36,8 @@ type ProcessTime struct {
 }
 
 // RunCommand and return process info
-func RunCommand(command string) (*Process, error) {
-	process := &Process{Command: command}
+func RunCommand(command string, notime bool, log bool) (*Process, error) {
+	process := &Process{Command: command, notime: notime, fulllog: log}
 	err := process.Run()
 
 	return process, err
@@ -58,17 +60,21 @@ func (p *Process) Run() error {
 
 	err = cmd.Wait()
 	endedAt := time.Now()
-	p.Time = ProcessTime{
-		Real: endedAt.Sub(startedAt).String(),
-		User: cmd.ProcessState.UserTime().String(),
-		Sys:  cmd.ProcessState.SystemTime().String(),
-	}
 	p.Exit = cmd.ProcessState.ExitCode()
 
-	fmt.Println("")
-	fmt.Println("real\t", p.Time.Real)
-	fmt.Println("user\t", p.Time.User)
-	fmt.Println("sys\t", p.Time.Sys)
+	if !p.notime {
+		p.Time = ProcessTime{
+			Real: endedAt.Sub(startedAt).String(),
+			User: cmd.ProcessState.UserTime().String(),
+			Sys:  cmd.ProcessState.SystemTime().String(),
+		}
+
+		fmt.Println("")
+		fmt.Println("real\t", p.Time.Real)
+		fmt.Println("user\t", p.Time.User)
+		fmt.Println("sys\t", p.Time.Sys)
+	}
+
 	if err != nil && strings.HasPrefix(err.Error(), "exit status") {
 		return nil
 	}
@@ -77,7 +83,7 @@ func (p *Process) Run() error {
 }
 
 func (p *Process) log(r io.Reader) {
-	var shouldLog bool
+	shouldLog := p.fulllog
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		text := scanner.Text()

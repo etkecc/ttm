@@ -7,6 +7,9 @@ import (
 
 // Config ...
 type Config struct {
+	Log    bool
+	NoTime bool
+
 	Login      string
 	RoomID     string
 	Password   string
@@ -20,12 +23,23 @@ func readEnv(shortkey string) string {
 	return strings.TrimSpace(os.Getenv(key))
 }
 
+func readEnvBool(shortkey string) bool {
+	key := strings.ToUpper(prefix + "_" + strings.ReplaceAll(shortkey, ".", "_"))
+	value := strings.TrimSpace(os.Getenv(key))
+	return (value == "1" || value == "true" || value == "yes")
+}
+
 // New config
 func New() *Config {
 	return &Config{
+		// connection
 		Homeserver: readEnv("homeserver"),
 		Password:   readEnv("password"),
 		RoomID:     readEnv("roomid"),
 		Login:      readEnv("login"),
+
+		// options
+		NoTime: readEnvBool("notime"),
+		Log:    readEnvBool("log"),
 	}
 }

@@ -17,12 +17,12 @@ func main() {
 	sender := matrix.New(cfg.Homeserver, cfg.Login, cfg.Password, cfg.RoomID)
 	// login in separate goroutine, to save some time
 	go login(sender)
-	process, err := term.RunCommand(getCommand())
+	process, err := term.RunCommand(getCommand(), cfg.NoTime, cfg.Log)
 	if err != nil {
 		panic(err)
 	}
 
-	plaintext, html := composeMessage(process)
+	plaintext, html := composeMessage(process, cfg.NoTime)
 	err = sender.SendMessage(plaintext, html)
 	if err != nil {
 		panic(err)
@@ -40,7 +40,7 @@ func getCommand() string {
 	return strings.Join(os.Args[1:], " ")
 }
 
-func composeMessage(process *term.Process) (string, string) {
+func composeMessage(process *term.Process, notime bool) (string, string) {
 	var text strings.Builder
 	var html strings.Builder
 	// plain text
@@ -52,10 +52,12 @@ func composeMessage(process *term.Process) (string, string) {
 		}
 	}
 	text.WriteString("\n\n")
-	text.WriteString("real\t" + process.Time.Real + "\n")
-	text.WriteString("user\t" + process.Time.User + "\n")
-	text.WriteString("sys\t" + process.Time.User + "\n")
-	text.WriteString("\n\n")
+	if !notime {
+		text.WriteString("real\t" + process.Time.Real + "\n")
+		text.WriteString("user\t" + process.Time.User + "\n")
+		text.WriteString("sys\t" + process.Time.User + "\n")
+		text.WriteString("\n\n")
+	}
 	text.WriteString("Exit code: " + strconv.Itoa(process.Exit))
 
 	// html
@@ -66,13 +68,16 @@ func composeMessage(process *term.Process) (string, string) {
 		for _, line := range process.Log {
 			html.WriteString(line + "\n")
 		}
+		html.WriteString("</pre>")
+	}
+	html.WriteString("\n\n")
+	if !notime {
+		html.WriteString("<pre>\n")
+		html.WriteString("real\t" + process.Time.Real + "\n")
+		html.WriteString("user\t" + process.Time.User + "\n")
+		html.WriteString("sys\t" + process.Time.User + "\n")
 		html.WriteString("</pre>\n\n")
 	}
-	html.WriteString("<pre>\n")
-	html.WriteString("real\t" + process.Time.Real + "\n")
-	html.WriteString("user\t" + process.Time.User + "\n")
-	html.WriteString("sys\t" + process.Time.User + "\n")
-	html.WriteString("</pre>\n\n")
 	html.WriteString("Exit code: <code>" + strconv.Itoa(process.Exit) + "</code>")
 
 	return text.String(), html.String()

@@ -69,6 +69,8 @@ done via env vars:
 * **TTM_LOGIN** - matrix login (localpart) (eg: `ttm`, not `@ttm:example.com`)
 * **TTM_PASSWORD** - matrix password
 * **TTM_ROOMID** - matrix room id (eg: `!fsafaFSAsf:example.com`)
+* **TTM_NOTIME** - do not send time information to matrix, default: false
+* **TTM_LOG** - send full log information to matrix, default: false
 
 ## How to get
 
