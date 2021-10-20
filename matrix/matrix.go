@@ -11,6 +11,15 @@ import (
 	"time"
 )
 
+// MaxPayloadSize of any matrix event, in bytes
+const MaxPayloadSize = 65536
+
+// InfrastructurePayloadSize is an approximate size in bytes of json payload template, may differ a bit by called command size
+const InfrastructurePayloadSize = 1000
+
+// SuggestedPayloadBuffer is a "just in case" spare size in bytes, suggested to leave unused
+const SuggestedPayloadBuffer = 2000
+
 // Client implementation
 type Client struct {
 	homeserver string
