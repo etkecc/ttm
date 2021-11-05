@@ -77,6 +77,49 @@ done via env vars:
 * **TTM_NOHTML** - do not send html-formatted mesage, only plaintext (increases allowed log size x2), default: false
 * **TTM_LOG** - send full log information to matrix, default: false
 
+### Examples
+
+**minimal** (access token)
+
+```bash
+# auth
+export TTM_HOMESERVER=https://matrix.example.com
+export TTM_TOKEN=your_access_token
+
+# room
+export TTM_ROOMID=!ttmroom:example.com
+```
+
+**login/password auth with full log and without time info**
+
+```bash
+# auth
+export TTM_HOMESERVER=https://matrix.example.com
+export TTM_LOGIN=ttm
+export TTM_PASSWORD=thatsecure
+
+# room
+export TTM_ROOMID=!ttmroom:example.com
+
+# options
+export TTM_NOTIME=1
+export TTM_LOG=1
+```
+
+**access token auth without html formatting**
+
+```bash
+# auth
+export TTM_HOMESERVER=https://matrix.example.com
+export TTM_TOKEN=your_access_token
+
+# room
+export TTM_ROOMID=!ttmroom:example.com
+
+# options
+export TTM_NOHTML=1
+```
+
 ## How to get
 
 1. [Releases](https://gitlab.com/etke.cc/ttm/-/releases) for freebsd, linux and MacOS
