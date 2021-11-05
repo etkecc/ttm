@@ -19,7 +19,22 @@ func TestNew(t *testing.T) {
 		roomID:     "!test:example.com",
 	}
 
-	actual := New("https://matrix.example.com", "test", "test", "!test:example.com")
+	actual := New("https://matrix.example.com", "test", "test", "", "!test:example.com")
+
+	if !reflect.DeepEqual(expected, actual) {
+		t.Fail()
+	}
+}
+
+func TestNew_Token(t *testing.T) {
+	expected := &Client{
+		homeserver: "https://matrix.example.com",
+		token:      "test",
+		nologin:    true,
+		roomID:     "!test:example.com",
+	}
+
+	actual := New("https://matrix.example.com", "", "", "test", "!test:example.com")
 
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fail()
@@ -42,11 +57,41 @@ func TestLogin(t *testing.T) {
 	}
 }
 
+func TestLogin_NoLogin(t *testing.T) {
+	ctx := context.TODO()
+	client := &Client{
+		homeserver: "https://matrix.example.com",
+		token:      "test",
+		nologin:    true,
+		roomID:     "!test:example.com",
+	}
+
+	err := client.Login(ctx)
+	if err != nil {
+		t.Error(err)
+	}
+	if client.token != "test" {
+		t.Error("incorrect token is set")
+	}
+}
+
 func TestLogout(t *testing.T) {
 	ctx := context.TODO()
 	client, server := startServer(t, "/_matrix/client/r0/logout?access_token=test", nil, nil)
 	client.token = "test"
 	defer server.Close()
+
+	client.logout(ctx)
+}
+
+func TestLogout_NoLogin(t *testing.T) {
+	ctx := context.TODO()
+	client := &Client{
+		homeserver: "https://matrix.example.com",
+		token:      "test",
+		nologin:    true,
+		roomID:     "!test:example.com",
+	}
 
 	client.logout(ctx)
 }

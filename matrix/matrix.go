@@ -27,6 +27,7 @@ type Client struct {
 	roomID     string
 	login      string
 	token      string
+	nologin    bool
 }
 
 type loginRequest struct {
@@ -52,17 +53,29 @@ type messageRequest struct {
 }
 
 // New matrix client
-func New(homeserver, login, password, roomID string) *Client {
+func New(homeserver, login, password, token, roomID string) *Client {
+	var nologin bool
+	if token != "" {
+		nologin = true
+	}
+
 	return &Client{
 		homeserver: homeserver,
 		password:   password,
-		roomID:     roomID,
+		nologin:    nologin,
 		login:      login,
+		token:      token,
+
+		roomID: roomID,
 	}
 }
 
 // Login as matrix user
 func (c *Client) Login(ctx context.Context) error {
+	if c.nologin {
+		return nil
+	}
+
 	endpoint := c.homeserver + "/_matrix/client/r0/login"
 	request, err := json.Marshal(&loginRequest{
 		Type: "m.login.password",
@@ -135,6 +148,10 @@ func (c *Client) send(ctx context.Context, plaintext string, html string) error 
 
 // nolint // nobody cares about error here, worst case - the session will not be destroyed
 func (c *Client) logout(ctx context.Context) {
+	if c.nologin {
+		return
+	}
+
 	endpoint := fmt.Sprintf("%s/_matrix/client/r0/logout?access_token=%s", c.homeserver, c.token)
 	req, _ := http.NewRequestWithContext(ctx, "POST", endpoint, nil)
 	http.DefaultClient.Do(req)

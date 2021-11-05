@@ -8,6 +8,7 @@ var env = map[string]string{
 	"TTM_HOMESERVER": "https://matrix.example.com",
 	"TTM_LOGIN":      "test",
 	"TTM_PASSWORD":   "password",
+	"TTM_TOKEN":      "",
 	"TTM_ROOMID":     "!test:example.com",
 	"TTM_NOTIME":     "1",
 	"TTM_NOHTML":     "1",
@@ -28,6 +29,9 @@ func TestNew(t *testing.T) {
 		t.Fail()
 	}
 	if cfg.Password != "password" {
+		t.Fail()
+	}
+	if cfg.Token != "" {
 		t.Fail()
 	}
 	if !cfg.NoTime {

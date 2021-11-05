@@ -11,6 +11,7 @@ type Config struct {
 	NoTime bool
 	NoHTML bool
 
+	Token      string
 	Login      string
 	RoomID     string
 	Password   string
@@ -38,6 +39,7 @@ func New() *Config {
 		Password:   readEnv("password"),
 		RoomID:     readEnv("roomid"),
 		Login:      readEnv("login"),
+		Token:      readEnv("token"),
 
 		// options
 		NoTime: readEnvBool("notime"),

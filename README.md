@@ -66,8 +66,11 @@ So, feel free to use `latest`, it works. It will work. That will not change.
 done via env vars:
 
 * **TTM_HOMESERVER** - the real address of your matrix HS, not a delegated url (eg: `https://matrix.example.com`)
-* **TTM_LOGIN** - matrix login (localpart) (eg: `ttm`, not `@ttm:example.com`)
-* **TTM_PASSWORD** - matrix password
+
+* **TTM_LOGIN** - _(only for password auth)_ matrix login (localpart) (eg: `ttm`, not `@ttm:example.com`)
+* **TTM_PASSWORD** - _(only for password auth)_ matrix password
+* **TTM_TOKEN** - _(only for access token)_ matrix session access token
+
 * **TTM_ROOMID** - matrix room id (eg: `!fsafaFSAsf:example.com`)
 
 * **TTM_NOTIME** - do not send time information to matrix, default: false

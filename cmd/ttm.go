@@ -14,9 +14,11 @@ import (
 func main() {
 	cfg := config.New()
 	command := compose.Command()
-	sender := matrix.New(cfg.Homeserver, cfg.Login, cfg.Password, cfg.RoomID)
-	// login in separate goroutine, to save some time
-	go login(sender)
+	sender := matrix.New(cfg.Homeserver, cfg.Login, cfg.Password, cfg.Token, cfg.RoomID)
+	// login (password auth only) in separate goroutine, to save some time
+	if cfg.Token == "" {
+		go login(sender)
+	}
 	process, err := term.RunCommand(command, cfg.NoTime, cfg.Log)
 	if err != nil {
 		panic(err)
