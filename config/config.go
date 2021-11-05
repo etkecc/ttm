@@ -9,6 +9,7 @@ import (
 type Config struct {
 	Log    bool
 	NoTime bool
+	NoHTML bool
 
 	Login      string
 	RoomID     string
@@ -40,6 +41,7 @@ func New() *Config {
 
 		// options
 		NoTime: readEnvBool("notime"),
+		NoHTML: readEnvBool("nohtml"),
 		Log:    readEnvBool("log"),
 	}
 }

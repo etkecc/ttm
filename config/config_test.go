@@ -10,6 +10,7 @@ var env = map[string]string{
 	"TTM_PASSWORD":   "password",
 	"TTM_ROOMID":     "!test:example.com",
 	"TTM_NOTIME":     "1",
+	"TTM_NOHTML":     "1",
 	"TTM_LOG":        "1",
 }
 
@@ -30,6 +31,9 @@ func TestNew(t *testing.T) {
 		t.Fail()
 	}
 	if !cfg.NoTime {
+		t.Fail()
+	}
+	if !cfg.NoHTML {
 		t.Fail()
 	}
 	if !cfg.Log {

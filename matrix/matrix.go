@@ -46,8 +46,8 @@ type loginResponse struct {
 
 type messageRequest struct {
 	Body          string `json:"body"`
-	FormattedBody string `json:"formatted_body"`
-	Format        string `json:"format"`
+	FormattedBody string `json:"formatted_body,omitempty"`
+	Format        string `json:"format,omitempty"`
 	MsgType       string `json:"msgtype"`
 }
 
@@ -100,11 +100,15 @@ func (c *Client) Login(ctx context.Context) error {
 }
 
 func (c *Client) send(ctx context.Context, plaintext string, html string) error {
+	var format string
 	endpoint := fmt.Sprintf("%s/_matrix/client/r0/rooms/%s/send/m.room.message?access_token=%s", c.homeserver, url.PathEscape(c.roomID), c.token)
+	if html != "" {
+		format = "org.matrix.custom.html"
+	}
 	request, err := json.Marshal(&messageRequest{
 		Body:          plaintext,
 		FormattedBody: html,
-		Format:        "org.matrix.custom.html",
+		Format:        format,
 		MsgType:       "m.text",
 	})
 	if err != nil {

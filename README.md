@@ -1,4 +1,4 @@
-# ttm - a `time` To Matrix [![Buy me a Coffee](https://shields.io/badge/donate-buy%20me%20a%20coffee-green?logo=buy-me-a-coffee&style=for-the-badge)](https://buymeacoffee.com/etkecc) [![coverage report](https://gitlab.com/etke.cc/ttm/badges/main/coverage.svg)](https://gitlab.com/etke.cc/ttm/-/commits/main) [![Go Report Card](https://goreportcard.com/badge/gitlab.com/etke.cc/ttm)](https://goreportcard.com/report/gitlab.com/etke.cc/ttm) [![godocs.io](http://godocs.io/gitlab.com/etke.cc/ttm?status.svg)](http://godocs.io/gitlab.com/etke.cc/ttm)
+# ttm - a `time` To Matrix [![Matrix](https://img.shields.io/matrix/ttm:etke.cc?logo=matrix&server_fqdn=matrix.org&style=for-the-badge)](https://matrix.to/#/#ttm:etke.cc) [![Buy me a Coffee](https://shields.io/badge/donate-buy%20me%20a%20coffee-green?logo=buy-me-a-coffee&style=for-the-badge)](https://buymeacoffee.com/etkecc) [![coverage report](https://gitlab.com/etke.cc/ttm/badges/main/coverage.svg)](https://gitlab.com/etke.cc/ttm/-/commits/main) [![Go Report Card](https://goreportcard.com/badge/gitlab.com/etke.cc/ttm)](https://goreportcard.com/report/gitlab.com/etke.cc/ttm) [![Go Reference](https://pkg.go.dev/badge/gitlab.com/etke.cc/ttm.svg)](https://pkg.go.dev/gitlab.com/etke.cc/ttm)
 
 A `time`-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.
 
@@ -69,7 +69,9 @@ done via env vars:
 * **TTM_LOGIN** - matrix login (localpart) (eg: `ttm`, not `@ttm:example.com`)
 * **TTM_PASSWORD** - matrix password
 * **TTM_ROOMID** - matrix room id (eg: `!fsafaFSAsf:example.com`)
+
 * **TTM_NOTIME** - do not send time information to matrix, default: false
+* **TTM_NOHTML** - do not send html-formatted mesage, only plaintext (increases allowed log size x2), default: false
 * **TTM_LOG** - send full log information to matrix, default: false
 
 ## How to get

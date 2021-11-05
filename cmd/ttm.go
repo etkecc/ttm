@@ -22,7 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	plaintext, html := compose.Message(process, cfg.NoTime)
+	plaintext, html := compose.Message(process, cfg.NoTime, cfg.NoHTML)
 	err = sender.SendMessage(plaintext, html)
 	if err != nil {
 		panic(err)
