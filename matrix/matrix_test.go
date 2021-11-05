@@ -84,7 +84,8 @@ func TestLogout(t *testing.T) {
 	client.logout(ctx)
 }
 
-func TestLogout_NoLogin(t *testing.T) {
+func TestLogout_NoLogin(_ *testing.T) {
+	// Not an actual test, because client.logout will just call "return" without any params in case of token auth
 	ctx := context.TODO()
 	client := &Client{
 		homeserver: "https://matrix.example.com",
