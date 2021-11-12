@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-var env = map[string]string{
+var testenv = map[string]string{
 	"TTM_HOMESERVER": "https://matrix.example.com",
 	"TTM_LOGIN":      "test",
 	"TTM_PASSWORD":   "password",
@@ -16,7 +16,7 @@ var env = map[string]string{
 }
 
 func TestNew(t *testing.T) {
-	for key, value := range env {
+	for key, value := range testenv {
 		t.Setenv(key, value)
 	}
 

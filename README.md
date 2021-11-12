@@ -72,10 +72,13 @@ done via env vars:
 * **TTM_TOKEN** - _(only for access token)_ matrix session access token
 
 * **TTM_ROOMID** - matrix room id (eg: `!fsafaFSAsf:example.com`)
+* **TTM_MSGTYPE** - message type, default: `m.text`, can be set to `m.notice`
 
 * **TTM_NOTIME** - do not send time information to matrix, default: false
-* **TTM_NOHTML** - do not send html-formatted mesage, only plaintext (increases allowed log size x2), default: false
-* **TTM_LOG** - send full log information to matrix, default: false
+* **TTM_NOHTML** - do not send html-formatted message, only plaintext (increases allowed log size x2), default: `0`
+* **TTM_NOTEXT** - do not send plaintext message, only html (increases allowed log size x2), default: `0`
+* **TTM_NOTICEFAIL** - send message with `TTM_MSGTYPE="m.notice"` if exit code is not 0, default: `0`
+* **TTM_LOG** - send full log information to matrix, default: `0`
 
 ### Examples
 

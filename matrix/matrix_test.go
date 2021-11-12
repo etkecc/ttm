@@ -17,9 +17,10 @@ func TestNew(t *testing.T) {
 		login:      "test",
 		password:   "test",
 		roomID:     "!test:example.com",
+		msgtype:    "m.text",
 	}
 
-	actual := New("https://matrix.example.com", "test", "test", "", "!test:example.com")
+	actual := New("https://matrix.example.com", "test", "test", "", "!test:example.com", "")
 
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fail()
@@ -32,9 +33,27 @@ func TestNew_Token(t *testing.T) {
 		token:      "test",
 		nologin:    true,
 		roomID:     "!test:example.com",
+		msgtype:    "m.notice",
 	}
 
-	actual := New("https://matrix.example.com", "", "", "test", "!test:example.com")
+	actual := New("https://matrix.example.com", "", "", "test", "!test:example.com", "m.notice")
+
+	if !reflect.DeepEqual(expected, actual) {
+		t.Fail()
+	}
+}
+
+func TestSetMsgType(t *testing.T) {
+	expected := &Client{
+		homeserver: "https://matrix.example.com",
+		login:      "test",
+		password:   "test",
+		roomID:     "!test:example.com",
+		msgtype:    "m.notice",
+	}
+
+	actual := New("https://matrix.example.com", "test", "test", "", "!test:example.com", "m.text")
+	actual.SetMsgType("m.notice")
 
 	if !reflect.DeepEqual(expected, actual) {
 		t.Fail()
@@ -107,6 +126,7 @@ func TestSendMessage(t *testing.T) {
 		password:   "test",
 		roomID:     "!test:example.com",
 		token:      "test",
+		msgtype:    "m.text",
 	}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualPath := r.URL.RequestURI()
@@ -145,6 +165,7 @@ func startServer(t *testing.T, expectedPath string, expectedRequestBody []byte, 
 		login:      "test",
 		password:   "test",
 		roomID:     "!test:example.com",
+		msgtype:    "m.text",
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

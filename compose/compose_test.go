@@ -58,7 +58,7 @@ sys	1s
 Exit code: <code>0</code>`
 	process := mockProcess(t, []string{"line 1", "line 2"})
 
-	actualText, actualHTML := Message(process, false, false)
+	actualText, actualHTML := Message(process, false, false, false)
 
 	if expectedText != actualText {
 		t.Errorf("expected plaintext message doesn't equal to actual\nexpected:\n%s\n\nactual:\n%s", expectedText, actualText)
@@ -85,7 +85,33 @@ Exit code: 0`
 	expectedHTML := ""
 	process := mockProcess(t, []string{"line 1", "line 2"})
 
-	actualText, actualHTML := Message(process, false, true)
+	actualText, actualHTML := Message(process, false, true, false)
+
+	if expectedText != actualText {
+		t.Errorf("expected plaintext message doesn't equal to actual\nexpected:\n%s\n\nactual:\n%s", expectedText, actualText)
+	}
+	if expectedHTML != actualHTML {
+		t.Errorf("expected html message doesn't equal to actual\nexpected:\n%s\n\nactual:\n%s", expectedHTML, actualHTML)
+	}
+}
+
+func TestMessage_NoText(t *testing.T) {
+	expectedText := ""
+	expectedHTML := `<b>ttm report</b><pre>echo test</pre><br><pre>
+line 1
+line 2
+</pre>
+
+<pre>
+real	1m
+user	1s
+sys	1s
+</pre>
+
+Exit code: <code>0</code>`
+	process := mockProcess(t, []string{"line 1", "line 2"})
+
+	actualText, actualHTML := Message(process, false, false, true)
 
 	if expectedText != actualText {
 		t.Errorf("expected plaintext message doesn't equal to actual\nexpected:\n%s\n\nactual:\n%s", expectedText, actualText)
@@ -105,7 +131,7 @@ func TestMessage_Shrink(t *testing.T) {
 	expectedHTML := ""
 	process := mockProcess(t, []string{strings.Repeat("t", matrix.MaxPayloadSize)})
 
-	actualText, actualHTML := Message(process, true, true)
+	actualText, actualHTML := Message(process, true, true, false)
 
 	if expectedText.String() != actualText {
 		t.Errorf("expected plaintext message doesn't equal to actual\nexpected:\n%d\n\nactual:\n%d", len(expectedText.String()), len(actualText))

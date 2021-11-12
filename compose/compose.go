@@ -19,16 +19,31 @@ func Command() string {
 }
 
 // Message compose plaintext and html message to send
-func Message(process *term.Process, notime bool, nohtml bool) (string, string) {
-	var text strings.Builder
-	var html strings.Builder
-	var logsb strings.Builder
+func Message(process *term.Process, notime bool, nohtml bool, notext bool) (string, string) {
+	var text string
+	var html string
+	log := getLog(process, nohtml, notext)
 
+	// plain text
+	if !notext {
+		text = getText(process, log, notime)
+	}
+
+	// html
+	if !nohtml {
+		html = getHTML(process, log, notime)
+	}
+
+	return text, html
+}
+
+func getLog(process *term.Process, nohtml bool, notext bool) string {
+	var logsb strings.Builder
 	for _, line := range process.Log {
 		logsb.WriteString(line + "\n")
 	}
 	log := logsb.String()
-	llm := getLogLengthModifier(nohtml)
+	llm := getLogLengthModifier(nohtml, notext)
 	// Here we try to roughly calculate if log will exceed matrix payload limit and shirnk it a bit
 	// note that we don't do precise calculations, because in that case we will need to generate payload multiple times,
 	// so following solution will work in 99% cases and the last 1% will be passed as-is.
@@ -40,10 +55,14 @@ func Message(process *term.Process, notime bool, nohtml bool) (string, string) {
 		log = "# the beginning of the log is omitted due to protocol limitations\n" + log[singleLogSizeDiff:]
 	}
 
-	// plain text
+	return log
+}
+
+func getText(process *term.Process, log string, notime bool) string {
+	var text strings.Builder
 	text.WriteString("ttm report\n")
 	text.WriteString("" + process.Command + "\n\n")
-	if len(process.Log) > 0 {
+	if len(log) > 0 {
 		text.WriteString(log)
 	}
 	text.WriteString("\n\n")
@@ -55,36 +74,38 @@ func Message(process *term.Process, notime bool, nohtml bool) (string, string) {
 	}
 	text.WriteString("Exit code: " + strconv.Itoa(process.Exit))
 
-	// html
-	if !nohtml {
-		html.WriteString("<b>ttm report</b>")
-		html.WriteString("<pre>" + process.Command + "</pre><br>")
-		if len(process.Log) > 0 {
-			html.WriteString("<pre>\n")
-			html.WriteString(log)
-			html.WriteString("</pre>")
-		}
-		html.WriteString("\n\n")
-		if !notime {
-			html.WriteString("<pre>\n")
-			html.WriteString("real\t" + process.Time.Real + "\n")
-			html.WriteString("user\t" + process.Time.User + "\n")
-			html.WriteString("sys\t" + process.Time.User + "\n")
-			html.WriteString("</pre>\n\n")
-		}
-		html.WriteString("Exit code: <code>" + strconv.Itoa(process.Exit) + "</code>")
-	}
-
-	return text.String(), html.String()
+	return text.String()
 }
 
-// getLogLengthModifier returns the modifier of the allowed log length, based on HTML setting.
+func getHTML(process *term.Process, log string, notime bool) string {
+	var html strings.Builder
+	html.WriteString("<b>ttm report</b>")
+	html.WriteString("<pre>" + process.Command + "</pre><br>")
+	if len(log) > 0 {
+		html.WriteString("<pre>\n")
+		html.WriteString(log)
+		html.WriteString("</pre>")
+	}
+	html.WriteString("\n\n")
+	if !notime {
+		html.WriteString("<pre>\n")
+		html.WriteString("real\t" + process.Time.Real + "\n")
+		html.WriteString("user\t" + process.Time.User + "\n")
+		html.WriteString("sys\t" + process.Time.User + "\n")
+		html.WriteString("</pre>\n\n")
+	}
+	html.WriteString("Exit code: <code>" + strconv.Itoa(process.Exit) + "</code>")
+
+	return html.String()
+}
+
+// getLogLengthModifier returns the modifier of the allowed log length, based on HTML and plaintext settings.
 // by default, both plaintext and HTML formatted body will be sent, so max log size <=~31kb,
-// because log output should be duplicated in both formats, but if you want to skip the HTML formatted body,
+// because log output should be duplicated in both formats, but if you want to skip the HTML formatted body or plaintext message,
 // the max log size <=~63kb
-func getLogLengthModifier(nohtml bool) int {
+func getLogLengthModifier(nohtml bool, notext bool) int {
 	mod := 2
-	if nohtml {
+	if nohtml || notext {
 		mod = 1
 	}
 

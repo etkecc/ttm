@@ -28,6 +28,7 @@ type Client struct {
 	login      string
 	token      string
 	nologin    bool
+	msgtype    string
 }
 
 type loginRequest struct {
@@ -53,10 +54,13 @@ type messageRequest struct {
 }
 
 // New matrix client
-func New(homeserver, login, password, token, roomID string) *Client {
+func New(homeserver, login, password, token, roomID, msgtype string) *Client {
 	var nologin bool
 	if token != "" {
 		nologin = true
+	}
+	if msgtype == "" {
+		msgtype = "m.text"
 	}
 
 	return &Client{
@@ -66,8 +70,14 @@ func New(homeserver, login, password, token, roomID string) *Client {
 		login:      login,
 		token:      token,
 
-		roomID: roomID,
+		roomID:  roomID,
+		msgtype: msgtype,
 	}
+}
+
+// SetMsgType allows override default msgtype
+func (c *Client) SetMsgType(msgtype string) {
+	c.msgtype = msgtype
 }
 
 // Login as matrix user
@@ -122,7 +132,7 @@ func (c *Client) send(ctx context.Context, plaintext string, html string) error 
 		Body:          plaintext,
 		FormattedBody: html,
 		Format:        format,
-		MsgType:       "m.text",
+		MsgType:       c.msgtype,
 	})
 	if err != nil {
 		return err

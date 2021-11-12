@@ -7,25 +7,39 @@ import (
 
 // Config ...
 type Config struct {
-	Log    bool
-	NoTime bool
+	// Log option to send full log output to matrix
+	Log bool
+	// NoHTML option to skip HTML formatted message to matrix
 	NoHTML bool
+	// NoText option to skip plaintext message to matrix
+	NoText bool
+	// NoTime option to skip time stats in message
+	NoTime bool
+	// MsgType option to set message type, default is "m.text", but "m.notice" is ok, too
+	MsgType string
+	// NoticeFail option to explicitly send "m.notice" message on exit code > 0
+	NoticeFail bool
 
-	Token      string
-	Login      string
-	RoomID     string
-	Password   string
+	// Token is an matrix user access token, to use without login and password
+	Token string
+	// Login is a matrix user login, to use with password
+	Login string
+	// RoomID is a target room ID where messages will be sent
+	RoomID string
+	// Password is a matrix user password, to use with login
+	Password string
+	// Homeserver is a target HS url (delegation not supported)
 	Homeserver string
 }
 
 const prefix = "ttm"
 
-func readEnv(shortkey string) string {
+func env(shortkey string) string {
 	key := strings.ToUpper(prefix + "_" + strings.ReplaceAll(shortkey, ".", "_"))
 	return strings.TrimSpace(os.Getenv(key))
 }
 
-func readEnvBool(shortkey string) bool {
+func envBool(shortkey string) bool {
 	key := strings.ToUpper(prefix + "_" + strings.ReplaceAll(shortkey, ".", "_"))
 	value := strings.TrimSpace(os.Getenv(key))
 	return (value == "1" || value == "true" || value == "yes")
@@ -35,15 +49,18 @@ func readEnvBool(shortkey string) bool {
 func New() *Config {
 	return &Config{
 		// connection
-		Homeserver: readEnv("homeserver"),
-		Password:   readEnv("password"),
-		RoomID:     readEnv("roomid"),
-		Login:      readEnv("login"),
-		Token:      readEnv("token"),
+		Homeserver: env("homeserver"),
+		Password:   env("password"),
+		RoomID:     env("roomid"),
+		Login:      env("login"),
+		Token:      env("token"),
 
 		// options
-		NoTime: readEnvBool("notime"),
-		NoHTML: readEnvBool("nohtml"),
-		Log:    readEnvBool("log"),
+		Log:        envBool("log"),
+		NoHTML:     envBool("nohtml"),
+		NoText:     envBool("notext"),
+		NoTime:     envBool("notime"),
+		MsgType:    env("msgtype"),
+		NoticeFail: envBool("noticefail"),
 	}
 }
