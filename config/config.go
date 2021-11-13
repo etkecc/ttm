@@ -24,8 +24,8 @@ type Config struct {
 	Token string
 	// Login is a matrix user login, to use with password
 	Login string
-	// RoomID is a target room ID where messages will be sent
-	RoomID string
+	// Room is a target room ID or alias where messages will be sent
+	Room string
 	// Password is a matrix user password, to use with login
 	Password string
 	// Homeserver is a target HS url (delegation not supported)
@@ -47,11 +47,16 @@ func envBool(shortkey string) bool {
 
 // New config
 func New() *Config {
+	room := env("roomid")
+	if room == "" {
+		room = env("room")
+	}
+
 	return &Config{
 		// connection
 		Homeserver: env("homeserver"),
 		Password:   env("password"),
-		RoomID:     env("roomid"),
+		Room:       room,
 		Login:      env("login"),
 		Token:      env("token"),
 

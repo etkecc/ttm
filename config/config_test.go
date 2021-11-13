@@ -9,7 +9,8 @@ var testenv = map[string]string{
 	"TTM_LOGIN":      "test",
 	"TTM_PASSWORD":   "password",
 	"TTM_TOKEN":      "",
-	"TTM_ROOMID":     "!test:example.com",
+	"TTM_ROOM":       "!test:example.com",
+	"TTM_ROOMID":     "",
 	"TTM_NOTIME":     "1",
 	"TTM_NOHTML":     "1",
 	"TTM_LOG":        "1",
@@ -34,6 +35,10 @@ func TestNew(t *testing.T) {
 	if cfg.Token != "" {
 		t.Fail()
 	}
+	if cfg.Room != "!test:example.com" {
+		t.Fail()
+	}
+
 	if !cfg.NoTime {
 		t.Fail()
 	}

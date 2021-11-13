@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -24,11 +25,11 @@ const SuggestedPayloadBuffer = 2000
 type Client struct {
 	homeserver string
 	password   string
-	roomID     string
+	Room       string
 	login      string
 	token      string
 	nologin    bool
-	msgtype    string
+	MsgType    string
 }
 
 type loginRequest struct {
@@ -53,8 +54,12 @@ type messageRequest struct {
 	MsgType       string `json:"msgtype"`
 }
 
+type roomResponse struct {
+	RoomID string `json:"room_id"`
+}
+
 // New matrix client
-func New(homeserver, login, password, token, roomID, msgtype string) *Client {
+func New(homeserver, login, password, token, room, msgtype string) *Client {
 	var nologin bool
 	if token != "" {
 		nologin = true
@@ -70,14 +75,9 @@ func New(homeserver, login, password, token, roomID, msgtype string) *Client {
 		login:      login,
 		token:      token,
 
-		roomID:  roomID,
-		msgtype: msgtype,
+		Room:    room,
+		MsgType: msgtype,
 	}
-}
-
-// SetMsgType allows override default msgtype
-func (c *Client) SetMsgType(msgtype string) {
-	c.msgtype = msgtype
 }
 
 // Login as matrix user
@@ -107,7 +107,7 @@ func (c *Client) Login(ctx context.Context) error {
 		return err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
@@ -122,49 +122,37 @@ func (c *Client) Login(ctx context.Context) error {
 	return nil
 }
 
-func (c *Client) send(ctx context.Context, plaintext string, html string) error {
-	var format string
-	endpoint := fmt.Sprintf("%s/_matrix/client/r0/rooms/%s/send/m.room.message?access_token=%s", c.homeserver, url.PathEscape(c.roomID), c.token)
-	if html != "" {
-		format = "org.matrix.custom.html"
+// ResolveRoom returns room ID from alias
+func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
+	if !c.isRoomAlias() {
+		return c.Room, nil
 	}
-	request, err := json.Marshal(&messageRequest{
-		Body:          plaintext,
-		FormattedBody: html,
-		Format:        format,
-		MsgType:       c.msgtype,
-	})
+
+	endpoint := fmt.Sprintf("%s/_matrix/client/r0/directory/room/%s", c.homeserver, url.PathEscape(room))
+	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 	if err != nil {
-		return err
-	}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(request))
-	if err != nil {
-		return err
+		return room, err
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return room, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return err
+		return room, err
 	}
 	if resp.StatusCode != 200 {
-		return fmt.Errorf("message was not sent: %s", string(body))
-	}
-	return nil
-}
-
-// nolint // nobody cares about error here, worst case - the session will not be destroyed
-func (c *Client) logout(ctx context.Context) {
-	if c.nologin {
-		return
+		return room, fmt.Errorf("could not resolve room alias: %s", string(body))
 	}
 
-	endpoint := fmt.Sprintf("%s/_matrix/client/r0/logout?access_token=%s", c.homeserver, c.token)
-	req, _ := http.NewRequestWithContext(ctx, "POST", endpoint, nil)
-	http.DefaultClient.Do(req)
+	var data roomResponse
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return room, err
+	}
+
+	return data.RoomID, nil
 }
 
 // SendMessage to the matrix room.
@@ -185,4 +173,54 @@ func (c *Client) SendMessage(plaintext, html string) error {
 	}
 
 	return nil
+}
+
+// isRoomAlias checks if provided room is an alias or room id
+func (c *Client) isRoomAlias() bool {
+	return strings.HasPrefix(c.Room, "#")
+}
+
+func (c *Client) send(ctx context.Context, plaintext string, html string) error {
+	var format string
+	endpoint := fmt.Sprintf("%s/_matrix/client/r0/rooms/%s/send/m.room.message?access_token=%s", c.homeserver, url.PathEscape(c.Room), c.token)
+	if html != "" {
+		format = "org.matrix.custom.html"
+	}
+	request, err := json.Marshal(&messageRequest{
+		Body:          plaintext,
+		FormattedBody: html,
+		Format:        format,
+		MsgType:       c.MsgType,
+	})
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(request))
+	if err != nil {
+		return err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("message was not sent: %s", string(body))
+	}
+	return nil
+}
+
+// nolint // nobody cares about error here, worst case - the session will not be destroyed
+func (c *Client) logout(ctx context.Context) {
+	if c.nologin {
+		return
+	}
+
+	endpoint := fmt.Sprintf("%s/_matrix/client/r0/logout?access_token=%s", c.homeserver, c.token)
+	req, _ := http.NewRequestWithContext(ctx, "POST", endpoint, nil)
+	http.DefaultClient.Do(req)
 }

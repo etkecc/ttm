@@ -16,8 +16,8 @@ func TestNew(t *testing.T) {
 		homeserver: "https://matrix.example.com",
 		login:      "test",
 		password:   "test",
-		roomID:     "!test:example.com",
-		msgtype:    "m.text",
+		Room:       "!test:example.com",
+		MsgType:    "m.text",
 	}
 
 	actual := New("https://matrix.example.com", "test", "test", "", "!test:example.com", "")
@@ -32,8 +32,8 @@ func TestNew_Token(t *testing.T) {
 		homeserver: "https://matrix.example.com",
 		token:      "test",
 		nologin:    true,
-		roomID:     "!test:example.com",
-		msgtype:    "m.notice",
+		Room:       "!test:example.com",
+		MsgType:    "m.notice",
 	}
 
 	actual := New("https://matrix.example.com", "", "", "test", "!test:example.com", "m.notice")
@@ -43,19 +43,34 @@ func TestNew_Token(t *testing.T) {
 	}
 }
 
-func TestSetMsgType(t *testing.T) {
-	expected := &Client{
+func TestResolveRoom(t *testing.T) {
+	ctx := context.TODO()
+	response := `{"room_id":"!test:example.com","servers":["example.com"]}`
+	client, server := startServer(t, "/_matrix/client/r0/directory/room/%23test:example.com", nil, []byte(response))
+	defer server.Close()
+	client.Room = "#test:example.com"
+
+	roomID, err := client.ResolveRoom(ctx, "#test:example.com")
+	if err != nil {
+		t.Error(err)
+	}
+	if roomID != "!test:example.com" {
+		t.Fail()
+	}
+}
+
+func TestResolveRoom_NoAlias(t *testing.T) {
+	ctx := context.TODO()
+	client := &Client{
 		homeserver: "https://matrix.example.com",
-		login:      "test",
-		password:   "test",
-		roomID:     "!test:example.com",
-		msgtype:    "m.notice",
+		Room:       "!test:example.com",
 	}
 
-	actual := New("https://matrix.example.com", "test", "test", "", "!test:example.com", "m.text")
-	actual.SetMsgType("m.notice")
-
-	if !reflect.DeepEqual(expected, actual) {
+	roomID, err := client.ResolveRoom(ctx, client.Room)
+	if err != nil {
+		t.Error(err)
+	}
+	if roomID != "!test:example.com" {
 		t.Fail()
 	}
 }
@@ -82,7 +97,7 @@ func TestLogin_NoLogin(t *testing.T) {
 		homeserver: "https://matrix.example.com",
 		token:      "test",
 		nologin:    true,
-		roomID:     "!test:example.com",
+		Room:       "!test:example.com",
 	}
 
 	err := client.Login(ctx)
@@ -110,7 +125,7 @@ func TestLogout_NoLogin(_ *testing.T) {
 		homeserver: "https://matrix.example.com",
 		token:      "test",
 		nologin:    true,
-		roomID:     "!test:example.com",
+		Room:       "!test:example.com",
 	}
 
 	client.logout(ctx)
@@ -124,9 +139,9 @@ func TestSendMessage(t *testing.T) {
 		homeserver: "https://matrix.example.com",
 		login:      "test",
 		password:   "test",
-		roomID:     "!test:example.com",
+		Room:       "!test:example.com",
 		token:      "test",
-		msgtype:    "m.text",
+		MsgType:    "m.text",
 	}
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		actualPath := r.URL.RequestURI()
@@ -164,8 +179,8 @@ func startServer(t *testing.T, expectedPath string, expectedRequestBody []byte, 
 		homeserver: "https://matrix.example.com",
 		login:      "test",
 		password:   "test",
-		roomID:     "!test:example.com",
-		msgtype:    "m.text",
+		Room:       "!test:example.com",
+		MsgType:    "m.text",
 	}
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

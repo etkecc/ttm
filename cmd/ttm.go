@@ -14,13 +14,13 @@ import (
 func main() {
 	cfg := getConfig()
 	command := getCommand()
-	client := getClient(cfg.Homeserver, cfg.Login, cfg.Password, cfg.Token, cfg.RoomID, cfg.MsgType)
+	client := getClient(cfg.Homeserver, cfg.Login, cfg.Password, cfg.Token, cfg.Room, cfg.MsgType)
 	process := runCommand(command, cfg.NoTime, cfg.Log)
 	plaintext, html := compose.Message(process, cfg.NoTime, cfg.NoHTML, cfg.NoText)
 
 	// override msgtype if TTM_NOTICEFAIL and exit code != 0
 	if process.Exit != 0 && cfg.NoticeFail {
-		client.SetMsgType("m.notice")
+		client.MsgType = "m.notice"
 	}
 
 	sendMessage(client, plaintext, html)
@@ -49,16 +49,22 @@ func getCommand() string {
 	return command
 }
 
-func getClient(homeserver, login, password, token, roomID, msgtype string) *matrix.Client {
+func getClient(homeserver, login, password, token, room, msgtype string) *matrix.Client {
 	ctx := context.Background()
-	client := matrix.New(homeserver, login, password, token, roomID, msgtype)
-	// login (password auth only) in separate goroutine, to save some time
-	go func(ctx context.Context, c *matrix.Client) {
-		err := c.Login(ctx)
+	client := matrix.New(homeserver, login, password, token, room, msgtype)
+	go func(ctx context.Context, c *matrix.Client, room string) {
+		roomID, err := c.ResolveRoom(ctx, room)
+		if err != nil {
+			fmt.Println("TTM ERROR (matrix):", err)
+		} else {
+			c.Room = roomID
+		}
+
+		err = c.Login(ctx)
 		if err != nil {
 			fmt.Println("TTM ERROR (matrix):", err)
 		}
-	}(ctx, client)
+	}(ctx, client, room)
 
 	return client
 }
