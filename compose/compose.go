@@ -18,6 +18,17 @@ func Command() string {
 	return strings.Join(os.Args[1:], " ")
 }
 
+// Help returns usage help/docs
+func Help() string {
+	var help strings.Builder
+	help.WriteString("\n")
+	help.WriteString("Time To Matrix is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.\n\n")
+	help.WriteString("Usage:\n\n")
+	help.WriteString("\tttm <command>\n\n")
+	help.WriteString("Check the https://gitlab.com/etke.cc/ttm for list of available configuration params and examples\n")
+	return help.String()
+}
+
 // Message compose plaintext and html message to send
 func Message(process *term.Process, notime bool, nohtml bool, notext bool) (string, string) {
 	var text string
