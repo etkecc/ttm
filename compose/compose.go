@@ -25,6 +25,7 @@ func Help() string {
 	help.WriteString("Time To Matrix is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.\n\n")
 	help.WriteString("Usage:\n\n")
 	help.WriteString("\tttm <command>\n\n")
+	help.WriteString("If you want to get current configuration, run the following command: env | grep TTM_\n")
 	help.WriteString("Check the https://gitlab.com/etke.cc/ttm for list of available configuration params and examples\n")
 	return help.String()
 }
