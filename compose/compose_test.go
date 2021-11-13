@@ -141,6 +141,25 @@ func TestMessage_Shrink(t *testing.T) {
 	}
 }
 
+func TestHelp(t *testing.T) {
+	expected := `
+Time To Matrix is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.
+
+Usage:
+
+	ttm <command>
+
+If you want to get current configuration, run the following command: env | grep TTM_
+Check the https://gitlab.com/etke.cc/ttm for list of available configuration params and examples
+`
+
+	actual := Help()
+
+	if expected != actual {
+		t.Fail()
+	}
+}
+
 func mockProcess(t *testing.T, lines []string) *term.Process {
 	t.Helper()
 	return &term.Process{
