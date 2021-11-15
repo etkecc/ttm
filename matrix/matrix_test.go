@@ -46,8 +46,9 @@ func TestNew_Token(t *testing.T) {
 func TestResolveRoom(t *testing.T) {
 	ctx := context.TODO()
 	response := `{"room_id":"!test:example.com","servers":["example.com"]}`
-	client, server := startServer(t, "/_matrix/client/r0/directory/room/%23test:example.com", nil, []byte(response))
+	client, server := startServer(t, "/_matrix/client/r0/directory/room/%23test:example.com?access_token=test", nil, []byte(response))
 	defer server.Close()
+	client.token = "test"
 	client.Room = "#test:example.com"
 
 	roomID, err := client.ResolveRoom(ctx, "#test:example.com")

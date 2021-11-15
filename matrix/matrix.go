@@ -128,7 +128,7 @@ func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
 		return c.Room, nil
 	}
 
-	endpoint := fmt.Sprintf("%s/_matrix/client/r0/directory/room/%s", c.homeserver, url.PathEscape(room))
+	endpoint := fmt.Sprintf("%s/_matrix/client/r0/directory/room/%s?access_token=%s", c.homeserver, url.PathEscape(room), c.token)
 	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 	if err != nil {
 		return room, err
@@ -159,7 +159,7 @@ func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
 func (c *Client) SendMessage(plaintext, html string) error {
 	// that cycle needed in case login() goroutine in main package didn't finish yet
 	for {
-		if c.token != "" {
+		if c.token != "" && !c.isRoomAlias() {
 			break
 		}
 		time.Sleep(100 * time.Millisecond)

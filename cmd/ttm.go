@@ -53,17 +53,18 @@ func getClient(homeserver, login, password, token, room, msgtype string) *matrix
 	ctx := context.Background()
 	client := matrix.New(homeserver, login, password, token, room, msgtype)
 	go func(ctx context.Context, c *matrix.Client, room string) {
+		err := c.Login(ctx)
+		if err != nil {
+			fmt.Println("TTM ERROR (matrix):", err)
+			return
+		}
+
 		roomID, err := c.ResolveRoom(ctx, room)
 		if err != nil {
 			fmt.Println("TTM ERROR (matrix):", err)
-		} else {
-			c.Room = roomID
+			return
 		}
-
-		err = c.Login(ctx)
-		if err != nil {
-			fmt.Println("TTM ERROR (matrix):", err)
-		}
+		c.Room = roomID
 	}(ctx, client, room)
 
 	return client
