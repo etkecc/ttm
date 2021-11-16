@@ -19,10 +19,11 @@ func Command() string {
 }
 
 // Help returns usage help/docs
-func Help() string {
+func Help(version string) string {
 	var help strings.Builder
 	help.WriteString("\n")
-	help.WriteString("Time To Matrix is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.\n\n")
+	help.WriteString("Time To Matrix v" + version + "\n")
+	help.WriteString("is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.\n\n")
 	help.WriteString("Usage:\n\n")
 	help.WriteString("\tttm <command>\n\n")
 	help.WriteString("If you want to get current configuration, run the following command: env | grep TTM_\n")

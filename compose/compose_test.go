@@ -143,7 +143,8 @@ func TestMessage_Shrink(t *testing.T) {
 
 func TestHelp(t *testing.T) {
 	expected := `
-Time To Matrix is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.
+Time To Matrix vX.Y.Z
+is a time-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.
 
 Usage:
 
@@ -153,7 +154,7 @@ If you want to get current configuration, run the following command: env | grep 
 Check the https://gitlab.com/etke.cc/ttm for list of available configuration params and examples
 `
 
-	actual := Help()
+	actual := Help("X.Y.Z")
 
 	if expected != actual {
 		t.Fail()

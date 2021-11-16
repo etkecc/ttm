@@ -19,9 +19,6 @@ builds:
       - goos: darwin
         goarch: 386
 
-checksum:
-  name_template: 'checksums.txt'
-
 nfpms:
   - vendor: https://etke.cc
     maintainer: etke.cc
@@ -32,5 +29,11 @@ nfpms:
       - deb
       - rpm
       - apk
+    file_name_template: "{{ .PackageName }}-{{ .Version }}_{{ .Os }}-{{ .Arch }}"
+
 changelog:
   sort: asc
+checksum:
+  disable: true
+archives:
+  - format: binary

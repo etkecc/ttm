@@ -11,6 +11,8 @@ import (
 	"gitlab.com/etke.cc/ttm/term"
 )
 
+var version string = "development"
+
 func main() {
 	cfg := getConfig()
 	command := getCommand()
@@ -32,7 +34,7 @@ func getConfig() *config.Config {
 	cfg := config.New()
 	if cfg.NoText && cfg.NoHTML {
 		fmt.Println("TTM ERROR (config): you can't use both TTM_NOHTML and TTM_NOTEXT at the same time")
-		fmt.Println(compose.Help())
+		fmt.Println(compose.Help(version))
 		os.Exit(1)
 	}
 
@@ -42,7 +44,7 @@ func getConfig() *config.Config {
 func getCommand() string {
 	command := compose.Command()
 	if command == "--help" || command == "-h" {
-		fmt.Println(compose.Help())
+		fmt.Println(compose.Help(version))
 		os.Exit(0)
 	}
 
@@ -74,7 +76,7 @@ func runCommand(command string, notime bool, log bool) *term.Process {
 	process, err := term.RunCommand(command, notime, log)
 	if err != nil {
 		fmt.Println("TTY ERROR:", err)
-		fmt.Println(compose.Help())
+		fmt.Println(compose.Help(version))
 		os.Exit(1)
 	}
 
@@ -85,7 +87,7 @@ func sendMessage(client *matrix.Client, plaintext, html string) {
 	err := client.SendMessage(plaintext, html)
 	if err != nil {
 		fmt.Println("TTM ERROR (matrix):", err)
-		fmt.Println(compose.Help())
+		fmt.Println(compose.Help(version))
 		os.Exit(1)
 	}
 }
