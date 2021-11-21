@@ -87,7 +87,7 @@ auth can be done with access token or login/password, that's up to you
 **login/password** _if you want to login with matrix user login and password_
 
 * **TTM_LOGIN** - matrix login (localpart), eg: `ttm`, not `@ttm:example.com`
-* **TTM_PASSWORD** - matrix password, eg: `superSecurePAssword`
+* **TTM_PASSWORD** - matrix password, eg: `superSecurePassword`
 
 **access token** _if you want to login with existing session_
 
