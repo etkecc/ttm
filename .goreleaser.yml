@@ -21,6 +21,7 @@ builds:
 
 nfpms:
   - vendor: https://etke.cc
+    package_name: time-to-matrix
     maintainer: etke.cc
     description: ttm stand for time-to-matrix, `time`-like program that will send execution info to matrix room
     homepage: https://gitlab.com/etke.cc/ttm
