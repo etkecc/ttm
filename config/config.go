@@ -1,8 +1,7 @@
 package config
 
 import (
-	"os"
-	"strings"
+	"gitlab.com/etke.cc/go/env"
 )
 
 // Config ...
@@ -34,38 +33,28 @@ type Config struct {
 
 const prefix = "ttm"
 
-func env(shortkey string) string {
-	key := strings.ToUpper(prefix + "_" + strings.ReplaceAll(shortkey, ".", "_"))
-	return strings.TrimSpace(os.Getenv(key))
-}
-
-func envBool(shortkey string) bool {
-	key := strings.ToUpper(prefix + "_" + strings.ReplaceAll(shortkey, ".", "_"))
-	value := strings.TrimSpace(os.Getenv(key))
-	return (value == "1" || value == "true" || value == "yes")
-}
-
 // New config
 func New() *Config {
-	room := env("roomid")
+	env.SetPrefix(prefix)
+	room := env.String("roomid", "")
 	if room == "" {
-		room = env("room")
+		room = env.String("room", "")
 	}
 
 	return &Config{
 		// connection
-		Homeserver: env("homeserver"),
-		Password:   env("password"),
+		Homeserver: env.String("homeserver", ""),
+		Password:   env.String("password", ""),
 		Room:       room,
-		Login:      env("login"),
-		Token:      env("token"),
+		Login:      env.String("login", ""),
+		Token:      env.String("token", ""),
 
 		// options
-		Log:        envBool("log"),
-		NoHTML:     envBool("nohtml"),
-		NoText:     envBool("notext"),
-		NoTime:     envBool("notime"),
-		MsgType:    env("msgtype"),
-		NoticeFail: envBool("noticefail"),
+		Log:        env.Bool("log"),
+		NoHTML:     env.Bool("nohtml"),
+		NoText:     env.Bool("notext"),
+		NoTime:     env.Bool("notime"),
+		MsgType:    env.String("msgtype", ""),
+		NoticeFail: env.Bool("noticefail"),
 	}
 }
