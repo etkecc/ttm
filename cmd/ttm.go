@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.com/etke.cc/ttm/compose"
-	"gitlab.com/etke.cc/ttm/config"
-	"gitlab.com/etke.cc/ttm/matrix"
-	"gitlab.com/etke.cc/ttm/term"
+	"gitlab.com/etke.cc/tools/ttm/compose"
+	"gitlab.com/etke.cc/tools/ttm/config"
+	"gitlab.com/etke.cc/tools/ttm/matrix"
+	"gitlab.com/etke.cc/tools/ttm/term"
 )
 
-var version string = "development"
+var version = "development"
 
 func main() {
 	cfg := getConfig()
@@ -72,7 +72,7 @@ func getClient(homeserver, login, password, token, room, msgtype string) *matrix
 	return client
 }
 
-func runCommand(command string, notime bool, log bool) *term.Process {
+func runCommand(command string, notime, log bool) *term.Process {
 	process, err := term.RunCommand(command, notime, log)
 	if err != nil {
 		fmt.Println("TTY ERROR:", err)

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"gitlab.com/etke.cc/ttm/matrix"
-	"gitlab.com/etke.cc/ttm/term"
+	"gitlab.com/etke.cc/tools/ttm/matrix"
+	"gitlab.com/etke.cc/tools/ttm/term"
 )
 
 func TestCommand(t *testing.T) {

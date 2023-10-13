@@ -4,7 +4,7 @@ import (
 	"gitlab.com/etke.cc/go/env"
 )
 
-// Config ...
+// Config struct
 type Config struct {
 	// Log option to send full log output to matrix
 	Log bool

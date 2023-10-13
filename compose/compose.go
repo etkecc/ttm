@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gitlab.com/etke.cc/ttm/matrix"
-	"gitlab.com/etke.cc/ttm/term"
+	"gitlab.com/etke.cc/tools/ttm/matrix"
+	"gitlab.com/etke.cc/tools/ttm/term"
 )
 
 // Command compose command to run from cli args
@@ -32,9 +32,7 @@ func Help(version string) string {
 }
 
 // Message compose plaintext and html message to send
-func Message(process *term.Process, notime bool, nohtml bool, notext bool) (string, string) {
-	var text string
-	var html string
+func Message(process *term.Process, notime, nohtml, notext bool) (text, html string) {
 	log := getLog(process, nohtml, notext)
 
 	// plain text
@@ -50,7 +48,7 @@ func Message(process *term.Process, notime bool, nohtml bool, notext bool) (stri
 	return text, html
 }
 
-func getLog(process *term.Process, nohtml bool, notext bool) string {
+func getLog(process *term.Process, nohtml, notext bool) string {
 	var logsb strings.Builder
 	for _, line := range process.Log {
 		logsb.WriteString(line + "\n")
@@ -116,7 +114,7 @@ func getHTML(process *term.Process, log string, notime bool) string {
 // by default, both plaintext and HTML formatted body will be sent, so max log size <=~31kb,
 // because log output should be duplicated in both formats, but if you want to skip the HTML formatted body or plaintext message,
 // the max log size <=~63kb
-func getLogLengthModifier(nohtml bool, notext bool) int {
+func getLogLengthModifier(nohtml, notext bool) int {
 	mod := 2
 	if nohtml || notext {
 		mod = 1

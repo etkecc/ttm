@@ -36,7 +36,7 @@ type ProcessTime struct {
 }
 
 // RunCommand and return process info
-func RunCommand(command string, notime bool, log bool) (*Process, error) {
+func RunCommand(command string, notime, log bool) (*Process, error) {
 	process := &Process{Command: command, notime: notime, fulllog: log}
 	err := process.Run()
 
@@ -46,7 +46,7 @@ func RunCommand(command string, notime bool, log bool) (*Process, error) {
 // Run the command
 func (p *Process) Run() error {
 	args := strings.Split(p.Command, " ")
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd := exec.Command(args[0], args[1:]...) //nolint:gosec // that's intended
 	size, err := pty.GetsizeFull(os.Stdout)
 	if err != nil {
 		return err

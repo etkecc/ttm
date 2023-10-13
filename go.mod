@@ -1,4 +1,4 @@
-module gitlab.com/etke.cc/ttm
+module gitlab.com/etke.cc/tools/ttm
 
 go 1.17
 

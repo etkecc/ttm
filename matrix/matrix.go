@@ -98,7 +98,7 @@ func (c *Client) Login(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(request))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(request))
 	if err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
 	}
 
 	endpoint := fmt.Sprintf("%s/_matrix/client/r0/directory/room/%s?access_token=%s", c.homeserver, url.PathEscape(room), c.token)
-	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint, http.NoBody)
 	if err != nil {
 		return room, err
 	}
@@ -142,8 +142,8 @@ func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
 	if err != nil {
 		return room, err
 	}
-	if resp.StatusCode != 200 {
-		return room, fmt.Errorf("could not resolve room alias: %s", string(body))
+	if resp.StatusCode != http.StatusOK {
+		return room, fmt.Errorf("could not resolve room alias: %s", string(body)) //nolint:goerr113 // no need
 	}
 
 	var data roomResponse
@@ -180,7 +180,7 @@ func (c *Client) isRoomAlias() bool {
 	return strings.HasPrefix(c.Room, "#")
 }
 
-func (c *Client) send(ctx context.Context, plaintext string, html string) error {
+func (c *Client) send(ctx context.Context, plaintext, html string) error {
 	var format string
 	endpoint := fmt.Sprintf("%s/_matrix/client/r0/rooms/%s/send/m.room.message?access_token=%s", c.homeserver, url.PathEscape(c.Room), c.token)
 	if html != "" {
@@ -195,7 +195,7 @@ func (c *Client) send(ctx context.Context, plaintext string, html string) error 
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(request))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(request))
 	if err != nil {
 		return err
 	}
@@ -208,13 +208,13 @@ func (c *Client) send(ctx context.Context, plaintext string, html string) error 
 	if err != nil {
 		return err
 	}
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("message was not sent: %s", string(body))
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("message was not sent: %s", string(body)) //nolint:goerr113 // no need
 	}
 	return nil
 }
 
-// nolint // nobody cares about error here, worst case - the session will not be destroyed
+//nolint // nobody cares about error here, worst case - the session will not be destroyed
 func (c *Client) logout(ctx context.Context) {
 	if c.nologin {
 		return

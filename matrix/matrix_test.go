@@ -174,7 +174,7 @@ func TestSendMessage(t *testing.T) {
 	}
 }
 
-func startServer(t *testing.T, expectedPath string, expectedRequestBody []byte, responseBody []byte) (*Client, *httptest.Server) {
+func startServer(t *testing.T, expectedPath string, expectedRequestBody, responseBody []byte) (*Client, *httptest.Server) {
 	t.Helper()
 	client := &Client{
 		homeserver: "https://matrix.example.com",
