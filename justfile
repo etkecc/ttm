@@ -5,6 +5,7 @@ default:
 # update go deps
 update *flags:
     go get {{flags}} ./cmd
+    go mod tidy
     go mod vendor
 
 # run linter
@@ -27,4 +28,4 @@ run:
 
 # build app
 build:
-    go build -v -o emm ./cmd
+    go build -v -o ttm ./cmd
