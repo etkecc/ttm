@@ -73,7 +73,7 @@ func getText(process *term.Process, log string, notime bool) string {
 	var text strings.Builder
 	text.WriteString("ttm report\n")
 	text.WriteString("" + process.Command + "\n\n")
-	if len(log) > 0 {
+	if log != "" {
 		text.WriteString(log)
 	}
 	text.WriteString("\n\n")
@@ -92,7 +92,7 @@ func getHTML(process *term.Process, log string, notime bool) string {
 	var html strings.Builder
 	html.WriteString("<b>ttm report</b>")
 	html.WriteString("<pre>" + process.Command + "</pre><br>")
-	if len(log) > 0 {
+	if log != "" {
 		html.WriteString("<pre>\n")
 		html.WriteString(log)
 		html.WriteString("</pre>")
