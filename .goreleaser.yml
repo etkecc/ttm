@@ -5,19 +5,20 @@ before:
 
 builds:
   - main: ./cmd
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -extldflags "-static"
+    flags:
+      - -tags=timetzdata,goolm
     binary: ttm
     goos:
       - freebsd
       - linux
       - darwin
     goarch:
-      - 386
-      - arm
       - arm64
       - amd64
-    ignore:
-      - goos: darwin
-        goarch: 386
 
 nfpms:
   - vendor: https://etke.cc
