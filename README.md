@@ -55,7 +55,7 @@ Exit code: `0`
 ## How to get
 
 * Arch Linux [AUR](https://aur.archlinux.org/packages/time-to-matrix-git/)
-* or [Releases](https://github/etkecc/ttm/releases)
+* or [Releases](https://github.com/etkecc/ttm/releases)
 * or `go install github.com/etkecc/ttm@latest`
 * or from source code
 
