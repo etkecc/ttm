@@ -120,6 +120,8 @@ linters:
 issues:
   exclude-dirs:
     - mocks
+  exclude-files:
+    - dotenv/parser.go
   exclude-rules:
     - path: _test\.go
       linters:

@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.com/etke.cc/tools/ttm/compose"
-	"gitlab.com/etke.cc/tools/ttm/config"
-	"gitlab.com/etke.cc/tools/ttm/matrix"
-	"gitlab.com/etke.cc/tools/ttm/term"
+	"github.com/etkecc/ttm/internal/compose"
+	"github.com/etkecc/ttm/internal/config"
+	"github.com/etkecc/ttm/internal/matrix"
+	"github.com/etkecc/ttm/internal/term"
 )
 
 var version = "development"

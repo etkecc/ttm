@@ -1,7 +1,7 @@
 package config
 
 import (
-	"gitlab.com/etke.cc/go/env"
+	"github.com/etkecc/go-env"
 )
 
 // Config struct

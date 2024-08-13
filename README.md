@@ -1,4 +1,4 @@
-# ttm - a `time` To Matrix [![Matrix](https://img.shields.io/matrix/ttm:etke.cc?logo=matrix&server_fqdn=matrix.org&style=for-the-badge)](https://matrix.to/#/#ttm:etke.cc) [![coverage report](https://gitlab.com/etke.cc/tools/ttm/badges/main/coverage.svg)](https://gitlab.com/etke.cc/tools/ttm/-/commits/main) [![Go Report Card](https://goreportcard.com/badge/gitlab.com/etke.cc/tools/ttm)](https://goreportcard.com/report/gitlab.com/etke.cc/tools/ttm) [![Go Reference](https://pkg.go.dev/badge/gitlab.com/etke.cc/tools/ttm.svg)](https://pkg.go.dev/gitlab.com/etke.cc/tools/ttm)
+# ttm - a `time` To Matrix [![Matrix](https://img.shields.io/matrix/ttm:etke.cc?logo=matrix&server_fqdn=matrix.org&style=for-the-badge)](https://matrix.to/#/#ttm:etke.cc)
 
 A `time`-like command that will send end of an arbitrary command output and some other info (like exit status) to matrix room.
 
@@ -55,8 +55,8 @@ Exit code: `0`
 ## How to get
 
 * Arch Linux [AUR](https://aur.archlinux.org/packages/time-to-matrix-git/)
-* or [Releases](https://gitlab.com/etke.cc/tools/ttm/-/releases) for freebsd, linux and MacOS
-* or `go install gitlab.com/etke.cc/tools/ttm@latest`
+* or [Releases](https://github/etkecc/ttm/releases)
+* or `go install github.com/etkecc/ttm@latest`
 * or from source code
 
 ## Quick start

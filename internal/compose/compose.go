@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gitlab.com/etke.cc/tools/ttm/matrix"
-	"gitlab.com/etke.cc/tools/ttm/term"
+	"github.com/etkecc/ttm/internal/matrix"
+	"github.com/etkecc/ttm/internal/term"
 )
 
 // Command compose command to run from cli args
