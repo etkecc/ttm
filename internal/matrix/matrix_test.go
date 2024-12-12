@@ -3,7 +3,7 @@ package matrix
 import (
 	"bytes"
 	"context"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -154,7 +154,7 @@ func TestSendMessage(t *testing.T) {
 		if actualPath != expectedPath {
 			t.Error("request url is not expected. actual:", actualPath)
 		}
-		requestBody, err := ioutil.ReadAll(r.Body)
+		requestBody, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Error("sent request body cannot be read")
 		}
@@ -189,7 +189,7 @@ func startServer(t *testing.T, expectedPath string, expectedRequestBody, respons
 		if actualPath != expectedPath {
 			t.Error("request url is not expected. actual:", actualPath)
 		}
-		requestBody, err := ioutil.ReadAll(r.Body)
+		requestBody, err := io.ReadAll(r.Body)
 		if err != nil {
 			t.Error("sent request body cannot be read")
 		}
