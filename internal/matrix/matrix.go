@@ -143,7 +143,7 @@ func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
 		return room, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return room, fmt.Errorf("could not resolve room alias: %s", string(body)) //nolint:goerr113 // no need
+		return room, fmt.Errorf("could not resolve room alias: %s", string(body))
 	}
 
 	var data roomResponse
@@ -159,7 +159,7 @@ func (c *Client) ResolveRoom(ctx context.Context, room string) (string, error) {
 func (c *Client) SendMessage(plaintext, html string) error {
 	// that cycle needed in case login() goroutine in main package didn't finish yet
 	for {
-		if c.token != "" && !c.isRoomAlias() {
+		if c.token != "" && !c.isRoomAlias() { //nolint:staticcheck // we want that loop
 			break
 		}
 		time.Sleep(100 * time.Millisecond)
@@ -209,18 +209,24 @@ func (c *Client) send(ctx context.Context, plaintext, html string) error {
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("message was not sent: %s", string(body)) //nolint:goerr113 // no need
+		return fmt.Errorf("message was not sent: %s", string(body))
 	}
 	return nil
 }
 
-//nolint // nobody cares about error here, worst case - the session will not be destroyed
 func (c *Client) logout(ctx context.Context) {
 	if c.nologin {
 		return
 	}
 
 	endpoint := fmt.Sprintf("%s/_matrix/client/r0/logout?access_token=%s", c.homeserver, c.token)
-	req, _ := http.NewRequestWithContext(ctx, "POST", endpoint, nil)
-	http.DefaultClient.Do(req)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, http.NoBody)
+	if err != nil {
+		return
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return
+	}
+	resp.Body.Close()
 }
